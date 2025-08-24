@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/wallets")
-@CrossOrigin(origins = "https://e-wallet-management-system.vercel.app")
+@CrossOrigin(origins = "http://localhost:8081")
 public class WalletController {
 
     @Autowired

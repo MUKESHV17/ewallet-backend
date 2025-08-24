@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/transactions")
-@CrossOrigin(origins = "https://e-wallet-management-system.vercel.app")
+@CrossOrigin(origins = "http://localhost:8081")
 public class TransactionController {
 
     @Autowired

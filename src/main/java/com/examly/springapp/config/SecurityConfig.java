@@ -29,44 +29,41 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authz -> authz
-                // Allow preflight requests for CORS
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                // Public endpoints
+                // --- Public endpoints ---
                 .requestMatchers("/api/users/register", "/api/users/login").permitAll()
                 .requestMatchers("/api/users/debug/**").permitAll()
 
-                // Admin-only endpoints
+                // --- Admin-only endpoints ---
                 .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/users/admin/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/users/{id}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").hasRole("ADMIN")
-
-                // User wallet endpoints
+                 
+                // --- ADDED: User-only wallet endpoints ---
                 .requestMatchers("/api/wallets/**").hasRole("USER")
 
-                // Everything else requires authentication
+
+                // --- Authenticated endpoints (for any role) ---
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             );
-
+        
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
+        
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Use setAllowedOriginPatterns to support dynamic origins if needed
-        configuration.setAllowedOriginPatterns(Arrays.asList("https://e-wallet-management-system.vercel.app"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8081"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
-
+        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

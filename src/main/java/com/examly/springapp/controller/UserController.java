@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "https://e-wallet-management-system.vercel.app")
+@CrossOrigin(origins = "http://localhost:8081")
 public class UserController {
 
     private final UserService userService;
